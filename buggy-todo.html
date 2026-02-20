@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📝 Todo App - Bug Hunt Challenge</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 500px;
+            padding: 30px;
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 25px;
+            font-size: 0.9em;
+        }
+
+        .warning {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #856404;
+            font-weight: bold;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        #todoInput {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        #todoInput:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        #addBtn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        #addBtn:hover {
+            background: #5568d3;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 0.85em;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        #todoList {
+            list-style: none;
+            margin-bottom: 15px;
+        }
+
+        .todo-item {
+            background: #f8f9fa;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+
+        .todo-item:hover {
+            background: #e9ecef;
+        }
+
+        .todo-item.completed {
+            opacity: 0.6;
+        }
+
+        .todo-item.completed .todo-text {
+            text-decoration: line-through;
+        }
+
+        .todo-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .todo-text {
+            flex: 1;
+            font-size: 1em;
+        }
+
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background 0.3s;
+        }
+
+        .delete-btn:hover {
+            background: #c82333;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        #clearCompleted {
+            background: #28a745;
+            color: white;
+        }
+
+        #clearCompleted:hover {
+            background: #218838;
+        }
+
+        #clearAll {
+            background: #6c757d;
+            color: white;
+        }
+
+        #clearAll:hover {
+            background: #5a6268;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+
+        .empty-state-icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📝 My Todo List</h1>
+        <p class="subtitle">Stay organized and productive!</p>
+
+        <div class="warning">
+            ⚠️ This app has a few bugs! Can you find them all?
+        </div>
+
+        <div class="input-group">
+            <input type="text" id="todoInput" placeholder="What needs to be done?">
+            <button id="addBtn">Add</button>
+        </div>
+
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-value" id="totalCount">0</div>
+                <div class="stat-label">Total Tasks</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="completedCount">0</div>
+                <div class="stat-label">Completed</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="pendingCount">0</div>
+                <div class="stat-label">Pending</div>
+            </div>
+        </div>
+
+        <ul id="todoList">
+            <div class="empty-state">
+                <div class="empty-state-icon">📭</div>
+                <p>No tasks yet. Add one above!</p>
+            </div>
+        </ul>
+
+        <div class="actions">
+            <button class="action-btn" id="clearCompleted">Clear Completed</button>
+            <button class="action-btn" id="clearAll">Clear All</button>
+        </div>
+    </div>
+
+    <script>
+        // Todo App - BUGGY VERSION
+        
+        let todos = [];
+
+        function loadTodos() {
+            const saved = localStorage.getItem('todos');
+            if (saved) {
+                todos = JSON.parse(saved);
+                renderTodos();
+            }
+        }
+
+        function saveTodos() {
+            localStorage.setItem('todo', JSON.stringify(todos));
+        }
+
+        function addTodo() {
+            const input = document.getElementById('todoInput');
+            const text = input.value.trim();
+                        
+            const todo = {
+                id: Date.now(),
+                text: text,
+                completed: false
+            };
+            
+            todos.push(todo);
+            input.value = '';
+            
+            saveTodos();
+            renderTodos();
+        }
+
+        function toggleTodo(id) {
+            const todo = todos.find(t => t.id === id);
+            if (todo) {
+                todo.completed = !todo.completed;
+                saveTodos();
+                renderTodos();
+            }
+        }
+
+        function deleteTodo(id) {
+            todos = todos.filter(t => t.id !== id);
+            saveTodos();
+            renderTodos();
+            updateStats();
+        }
+
+        function renderTodos() {
+            const list = document.getElementById('todoList');
+            
+            if (todos.length === 0) {
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📭</div>
+                        <p>No tasks yet. Add one above!</p>
+                    </div>
+                `;
+                updateStats();
+                return;
+            }
+            
+            todos.forEach(todo => {
+                const li = document.createElement('li');
+                li.className = 'todo-item';
+                if (todo.completed) {
+                    li.classList.add('completed');
+                }
+                
+                li.innerHTML = `
+                    <input type="checkbox" class="todo-checkbox" ${todo.completed ? 'checked' : ''}>
+                    <span class="todo-text">${todo.text}</span>
+                    <button class="delete-btn">Delete</button>
+                `;
+                
+                const checkbox = li.querySelector('.todo-checkbox');
+                const deleteBtn = li.querySelector('.delete-btn');
+                
+                checkbox.addEventListener('change', () => toggleTodo(todo.id));
+                deleteBtn.addEventListener('click', () => deleteTodo(todo.id));
+
+                list.innerHTML = ''; 
+                list.appendChild(li);
+            });
+            
+        }
+
+        function updateStats() {
+            const total = todos.length;
+            const completed = todos.filter(t => t.completed).length;
+            const pending = total - completed;
+            
+            document.getElementById('totalCount').textContent = total;
+            document.getElementById('completedCount').textContent = completed;
+            document.getElementById('pendingCount').textContent = pending;
+        }
+
+        function clearCompleted() {
+            todos = todos.filter(t => !t.completed);
+            saveTodos();
+            renderTodos();
+        }
+
+        function clearAll() {
+            document.getElementById('todoInput').value = '';
+            saveTodos();
+            renderTodos();
+        }
+
+
+        // Event Listeners
+        document.getElementById('addBtn').addEventListener('click', addTodo);
+        document.getElementById('todoInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                addTodo();
+            }
+        });
+        document.getElementById('clearCompleted').addEventListener('click', clearCompleted);
+        document.getElementById('clearAll').addEventListener('click', clearAll);
+
+        // Initialize
+        loadTodos();
+    </script>
+</body>
+</html>
