@@ -350,7 +350,6 @@
                     <button class="delete-btn">Delete</button>
                 `;
                 
-                // ✅ FIX #5: Properly attach event listeners with correct IDs
                 const checkbox = li.querySelector('.todo-checkbox');
                 const deleteBtn = li.querySelector('.delete-btn');
                 
@@ -383,7 +382,7 @@
 
         // Clear all todos
         function clearAll() {
-            // ✅ FIX #6: Clear the todos array, not the input!
+            // ✅ FIX #5: Clear the todos array, not the input!
             todos = [];
             saveTodos();
             renderTodos();
